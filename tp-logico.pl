@@ -9,14 +9,14 @@ candidato(catherine, rojo).
 candidato(seth, amarillo).
 candidato(heather, amarillo).
 
-edad(frank, 50).
-edad(claire, 52).
-edad(garrett, 64).
-edad(peter, 26).
-edad(jackie, 38).
-edad(linda, 30).
+edad(frank, 	50).
+edad(claire,	52).
+edad(garrett, 	64).
+edad(peter, 	26).
+edad(jackie,	38).
+edad(linda, 	30).
 edad(catherine, 59).
-edad(heather, 50).
+edad(heather, 	50).
 
 postulaEn(azul, buenosAires).
 postulaEn(azul, tierraDelFuego).
@@ -38,8 +38,8 @@ postulaEn(amarillo, corrientes).
 postulaEn(amarillo, misiones).
 postulaEn(amarillo, buenosAires).
 
-habitantes(buenosAires, 15355000)
-habitantes(chaco, 1143201)
+habitantes(buenosAires, 15355000).
+habitantes(chaco, 1143201).
 habitantes(tierraDelFuego, 160720).
 habitantes(sanLuis, 489255).
 habitantes(neuquen, 637913).
@@ -72,7 +72,8 @@ muchosHabitantes(Provincia):-
 variosPartidos(Provincia):-
     postulaEn(Partido1, Provincia),
     postulaEn(Partido2, Provincia),
-    Partido1 /= Partido2.
+    Partido1 \= Partido2.
+% se cambio de / a \
 
 %Punto 3
 
@@ -124,36 +125,82 @@ intencionDeVotoEn(misiones, rojo, 90).
 intencionDeVotoEn(misiones, azul, 0).
 intencionDeVotoEn(misiones, amarillo, 0).
 
-leGanaA(Candidato1, Candidato2, Provincia):-
-    mismoPartido(Candidato1, Candidato2),
-    postulaEn(Candidato1, Provincia).
-leGanaA(Candidato1, Candidato2, Provincia):-
-    not(mismoPartido(Candidato1, Candidato2)),
-    postulaEn(Candidato1, Provincia).
-    postulaEn(Candidato2, Provincia).    
-    mayorPorcentaje(Candidato1, Candidato2, Provincia).
 
-mayorPorcentaje(Candidato1, Candidato2, Provincia):-
-    candidato(Candidato1, Partido1),
-    candidato(Candidato2, Partido2),
-    intencionDeVotoEn(Provincia, Partido1, Porcentaje1),
-    intencionDeVotoEn(Provincia, Partido2, Porcentaje2),
-    Porcentaje1 > Porcentaje2.
+leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
+    mismoPartido(CandidatoGanador, CandidatoPerdedor),
+	candidato(CandidatoGanador, PartidoGanador),
+    postulaEn(PartidoGanador, Provincia).
+leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
+    not(mismoPartido(CandidatoGanador, CandidatoPerdedor)),
+	candidato(CandidatoGanador, PartidoGanador), % se relaciona al candidato ganador con su partido
+	candidato(CandidatoPerdedor, PartidoPerdedor),
+    postulaEn(PartidoGanador, Provincia), % se relaciona el partido con la provincia
+	postulaEn(PartidoPerdedor, Provincia),
+    mayorPorcentaje(CandidatoGanador, CandidatoPerdedor, Provincia).
+leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
+    not(mismoPartido(CandidatoGanador, CandidatoPerdedor)),
+	candidato(CandidatoGanador, PartidoGanador), % se relaciona al candidato ganador con su partido
+	candidato(CandidatoPerdedor, PartidoPerdedor),
+    postulaEn(PartidoGanador, Provincia), % se relaciona el partido con la provincia
+	not(postulaEn(PartidoPerdedor, Provincia)).
+
+mayorPorcentaje(CandidatoGanador, CandidatoPerdedor, Provincia):-
+    candidato(CandidatoGanador, PartidoGanador),
+    candidato(CandidatoPerdedor, PartidoPerdedor),
+    intencionDeVotoEn(Provincia, PartidoGanador, PorcentajeGanador),
+    intencionDeVotoEn(Provincia, PartidoPerdedor, PorcentajePerdedor),
+    PorcentajeGanador > PorcentajePerdedor.
+	
+ mismoPartido(Candidato1, Candidato2):-
+	candidato(Candidato1, Partido),
+	candidato(Candidato2, Partido).
 
 %Punto 4
-
 elGranCandidato(Candidato):-
     candidatoMasJoven(Candidato),
-    forAll(postulaEn(Candidato, Provincia), leGanaATodos(Candidato, Provincia)).
+    forall(postulaEn(Partido, Provincia), leGanaATodos(Candidato, Provincia)).
 
 leGanaATodos(Candidato, Provincia):-
-    forAll(postulaEn(OtroCandidato , Provincia), leGanaA(Candidato, OtroCandidato, Provincia)).
+%	candidato(Candidato, Partido),
+	candidato(OtroCandidato, OtroPartido),
+    forall(postulaEn(OtroPartido , Provincia), leGanaA(Candidato, OtroCandidato, Provincia)).
+% leGanaATodos(frank, chubut). leGanaATodos(frank, corrientes). 
 
 candidatoMasJoven(Candidato):-
     candidato(Candidato, Partido),
-    forAll(candidato(OtroCandidato, Partido), mayorQue(OtroCandidato, Candidato)).
+    forall(candidato(OtroCandidato, Partido), mayorQue(OtroCandidato, Candidato)).
 
 mayorQue(Candidato1, Candidato2):-
     edad(Candidato1, Edad1),
     edad(Candidato2, Edad2),
-    Edad1 > Edad2.
+    Edad1 >= Edad2.
+
+
+%Punto 5  
+% ajusteConsultora(buenosAires, rojo, 20).   ajusteConsultora(neuquen, azul, -10).	OJO neuquen gana, nadie el rojo no compite ahí
+
+ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
+	leGanaATodos(Candidato, Provincia), % relaciono la provincia con el candidato
+	candidato(Candidato, Partido), % relaciono el partido con el candidato
+	intencionDeVotoEn(Provincia, Partido, Porcentaje),
+	PorcentajeDeVotos =:= Porcentaje-20.
+ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
+	candidato(Candidato, Partido), % relaciono el partido con el candidato
+	not(leGanaATodos(Candidato, Provincia)), % relaciono la provincia con el candidato
+	intencionDeVotoEn(Provincia, Partido, Porcentaje),
+	PorcentajeDeVotos =:= Porcentaje+5.
+	
+%Punto 6
+
+% inflacion(contaInferior, cotaSuperior)
+% construir(listaDeObras)
+% nuevosPuestosDeTrabajo(cantidad)
+% edilicio(hospital, 800)
+
+promete(Partido, Promesa() )
+
+promete(Partido, Promesa(inflacion(contaInferior, cotaSuperior)) )
+promete(Partido, Promesa(construir(listaDeObras)) )
+
+
+%promete(Partido, Promesa() )
