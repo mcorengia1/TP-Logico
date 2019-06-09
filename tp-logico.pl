@@ -197,10 +197,30 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 % nuevosPuestosDeTrabajo(cantidad)
 % edilicio(hospital, 800)
 
-promete(Partido, Promesa() )
 
-promete(Partido, Promesa(inflacion(contaInferior, cotaSuperior)) )
-promete(Partido, Promesa(construir(listaDeObras)) )
 
+promete(azul):-
+	construir(hospital, 100),
+	construir(jardines, 100),
+	construir(escuelas, 5),
+	inflacion(2, 4).
+	
+promete(amarillo):-
+	construir(hospital, 100),
+	construir(universidad, 1),
+	construir(comisarias, 200),
+	inflacion(1, 15).
+	
+promete(rojo):-
+	nuevosPuestosDeTrabajo(800000),
+	inflacion(10, 30).
 
 %promete(Partido, Promesa() )
+
+%Punto 7
+influenciaDePromesas(variacionIntencionDeVotos, promete(Partido)):-
+
+	
+	
+
+
