@@ -198,11 +198,11 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 % edilicio(hospital, 800)
 
 
-promete(azul, [construir(hospital, 100), construir(jardines, 100), construir(escuelas, 5)])
+promete(azul, [construir(hospital, 100), construir(jardines, 100), construir(escuelas, 5)]).
 promete(azul, inflacion(2, 4)).
 	
 
-promete(amarillo, [construir(hospital, 100), construir(universidad, 1), construir(comisarias, 200)])
+promete(amarillo, [construir(hospital, 100), construir(universidad, 1), construir(comisarias, 200)]).
 promete(amarillo, inflacion(1, 15)).
 
 
@@ -221,7 +221,7 @@ influenciaDePromesas(promete(Partido, Obras), VariacionIntencionDeVotos):-
 	sumlist(Influencias, VariacionIntencionDeVotos).
 
 calculoInfluencia(2 , construir(hospital, Cantidad)):-
-	Cantidad => 1.
+	Cantidad >= 1.
 calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	
 	Influencia is Cantidad * 0.1.
 calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
@@ -229,15 +229,19 @@ calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
 calculoInfluencia(200, construir(comisarias, Cantidad)):-
 	Cantidad == 200.
 calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
-	Edilicio /= hospital,
-	Edilicio /= comisarias,
-	Edilicio /= universidad,
-	Edilicio /= jardines,
-	Edilicio /= escuelas,
+	Edilicio \= hospital,
+	Edilicio \= comisarias,
+	Edilicio \= universidad,
+	Edilicio \= jardines,
+	Edilicio \= escuelas,
 	Influencia is Edilicio * (-1).
 
 
 %Punto 8
+% promedioDeCrecimiento(azul, 9.5).
+% promedioDeCrecimiento(rojo, -17).
+% promedioDeCrecimiento(amarillo, -4).
+
 promedioDeCrecimiento(Partido, CrecimientoTotal):-
 	findall(Influencia, (promete(Partido, Promesa) , influenciaDePromesas(Promesa, Influencia)), Influencias),
 	sumlist(Influencias, CrecimientoTotal).
