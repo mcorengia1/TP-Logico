@@ -199,26 +199,30 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 
 
 
-promete(azul):-
-	construir(hospital, 100),
-	construir(jardines, 100),
-	construir(escuelas, 5),
-	inflacion(2, 4).
+promete(azul, construir(hospital, 100)).
+promete(azul, construir(jardines, 100)).
+promete(azul, construir(escuelas, 5)).
+promete(azul, inflacion(2, 4)).
 	
-promete(amarillo):-
-	construir(hospital, 100),
-	construir(universidad, 1),
-	construir(comisarias, 200),
-	inflacion(1, 15).
+
+promete(amarillo, construir(hospital, 100)).
+promete(amarillo, construir(universidad, 1)).
+promete(amarillo, construir(comisarias, 200)).
+promete(amarillo, inflacion(1, 15)).
 	
-promete(rojo):-
-	nuevosPuestosDeTrabajo(800000),
-	inflacion(10, 30).
+
+promete(rojo, nuevosPuestosDeTrabajo(800000)).
+promete(rojo, inflacion(10, 30)).
 
 %promete(Partido, Promesa() )
 
 %Punto 7
-influenciaDePromesas(variacionIntencionDeVotos, promete(Partido)):-
+influenciaDePromesas(promete(_, inflacion(CotaInferior, CotaSuperior)), VariacionIntencionDeVotos):-
+	VariacionIntencionDeVotos is (CotaInferior + CotaSuperior) / (-2).
+influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), VariacionIntencionDeVotos):-
+	Cantidad > 50000,
+	VariacionIntencionDeVotos is 3.
+influenciaDePromesas(promete(Partido, construir, VariacionIntencionDeVotos)):-
 
 	
 	
