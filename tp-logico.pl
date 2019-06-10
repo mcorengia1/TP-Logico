@@ -198,20 +198,11 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 % edilicio(hospital, 800)
 
 
-<<<<<<< HEAD
 promete(azul, [construir(hospital, 100), construir(jardines, 100), construir(escuelas, 5)])
 promete(azul, inflacion(2, 4)).
 	
 
 promete(amarillo, [construir(hospital, 100), construir(universidad, 1), construir(comisarias, 200)])
-=======
-
-promete(azul, construir([(hospital, 100), (jardines, 100), (escuelas, 5)]).
-promete(azul, inflacion(2, 4)).
-	
-
-promete(amarillo, construir([(hospital, 100), (universidad, 1), (comisarias, 200)]).
->>>>>>> d8eb86b335b1eef87457ac3cfac8571c9c8b3bac
 promete(amarillo, inflacion(1, 15)).
 
 
@@ -236,11 +227,7 @@ calculoInfluencia(Influencia, construir(jardines, Cantidad)):-
 calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
 	Influencia is Cantidad * 0.1.
 calculoInfluencia(200, construir(comisarias, Cantidad)):-
-<<<<<<< HEAD
-	Cantidad == 200.influenciaDePromesas()
-=======
 	Cantidad == 200.
->>>>>>> d8eb86b335b1eef87457ac3cfac8571c9c8b3bac
 calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
 	Edilicio /= hospital,
 	Edilicio /= comisarias,
@@ -251,17 +238,6 @@ calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
 
 
 %Punto 8
-<<<<<<< HEAD
 promedioDeCrecimiento(Partido, CrecimientoTotal):-
 	findall(Influencia, (promete(Partido, Promesa) , influenciaDePromesas(Promesa, Influencia)), Influencias),
 	sumlist(Influencias, CrecimientoTotal).
-=======
-promedioDeCrecimiento(Partido, PuntajeTotal):-
-	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido, inflacion(CotaInferior, CotaSuperior)), VariacionIntencionDeVotos), PuntajeInflacion),
-	sumlist(Puntaje, CrecimientoTotal),
-	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido, nuevosPuestosDeTrabajo(Cantidad)), VariacionIntencionDeVotos), PuntajePuestosTrabajo),
-	sumlist(Puntaje, CrecimientoTotal),
-	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido, construir(Obras)), VariacionIntencionDeVotos), PuntajeCOnstrucciones),
-	sumlist(Puntaje, CrecimientoTotal),
-	PuntajeTotal is PuntajeInflacion+PuntajePuestosTrabajo+PuntajeCOnstrucciones.
->>>>>>> d8eb86b335b1eef87457ac3cfac8571c9c8b3bac
