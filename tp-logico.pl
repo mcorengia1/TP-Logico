@@ -243,5 +243,5 @@ calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
 % promedioDeCrecimiento(amarillo, -4).
 
 promedioDeCrecimiento(Partido, CrecimientoTotal):-
-	findall(Influencia, (promete(Partido, Promesa) , influenciaDePromesas(Promesa, Influencia)), Influencias),
+	findall(Influencia, (promete(Partido, Promesa) , influenciaDePromesas(promete(Partido, Promesa), Influencia)), Influencias),
 	sumlist(Influencias, CrecimientoTotal).
