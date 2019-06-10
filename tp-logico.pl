@@ -222,17 +222,17 @@ influenciaDePromesas(promete(Partido, construir(Obras)), VariacionIntencionDeVot
 	influenciaHospitales(Obras, InfluenciaHospitales),
 	influenciaJardinesYEscuelas(bras, InfluenciaJardinesYEscuelas),
 	influenciaComisarias(Obras, InfluenciaComisarias),
-	inlfuenciaGastoInnecesario(Partido, InfluenciaNegativa)
-	VariacionIntencionDeVotos is InfluenciaHospitales + InfluenciaJardinesYEscuelas + InfluenciaComisarias - InfluenciaNegativa.
+	inlfuenciaGastoInnecesario(Partido, InfluenciaNegativa),
+	VariacionIntencionDeVotos is (InfluenciaHospitales + InfluenciaJardinesYEscuelas + InfluenciaComisarias - InfluenciaNegativa).
 
 influenciaHospitales(Obras, Influencia):-
 	member((hospital, Cantidad), Obras),
-	Cantidad => 1,
+	Cantidad >= 1,
 	Influencia is 2.
 
 influenciaJardinesYEscuelas(Obras, Influencia):-
 	member((jardines, CantidadJardines), Obras),
-	member(escuelas, CantidadEscuelas), Obras)
+	member((escuelas, CantidadEscuelas), Obras),
 	Influencia is (CantidadJardines + CantidadEscuelas) * 0.1.
 
 influenciaComisarias(Obras, Influencia):-
@@ -246,15 +246,18 @@ inlfuenciaGastoInnecesario(Partido, Influencia):-
 
 edilicioInnecesario(Partido):-
 	promete(Partido, construir(Obra, _),
-	Obra /= hospital,
-	Obra /= comisarias,
-	Obra /= universidad,
-	Obra /= jardines,
-	Obra /= escuelas.
+	Obra \= hospital,
+	Obra \= comisarias,
+	Obra \= universidad,
+	Obra \= jardines,
+	Obra \= escuelas.
 
 %Punto 8
-promedioDeCrecimiento(Partido, CrecimientoTotal):-
-	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido),variacionIntencionDeVotos), Puntaje), % COMPLETAR CON LOS PARAMETROS QUE TOME, %puntaje por cada promesa
-	sumlist(Puntaje, CrecimientoTotal).
-
-
+promedioDeCrecimiento(Partido, PuntajeTotal):-
+	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido, inflacion(CotaInferior, CotaSuperior)), VariacionIntencionDeVotos), PuntajeInflacion),
+	sumlist(Puntaje, CrecimientoTotal),
+	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido, nuevosPuestosDeTrabajo(Cantidad)), VariacionIntencionDeVotos), PuntajePuestosTrabajo),
+	sumlist(Puntaje, CrecimientoTotal),
+	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido, construir(Obras)), VariacionIntencionDeVotos), PuntajeCOnstrucciones),
+	sumlist(Puntaje, CrecimientoTotal),
+	PuntajeTotal is PuntajeInflacion+PuntajePuestosTrabajo+PuntajeCOnstrucciones.
