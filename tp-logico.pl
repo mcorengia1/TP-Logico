@@ -199,17 +199,13 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 
 
 
-promete(azul, construir(hospital, 100)).
-promete(azul, construir(jardines, 100)).
-promete(azul, construir(escuelas, 5)).
+promete(azul, construir([(hospital, 100), (jardines, 100), (escuelas, 5)]).
 promete(azul, inflacion(2, 4)).
 	
 
-promete(amarillo, construir(hospital, 100)).
-promete(amarillo, construir(universidad, 1)).
-promete(amarillo, construir(comisarias, 200)).
+promete(amarillo, construir([(hospital, 100), (universidad, 1), (comisarias, 200)]).
 promete(amarillo, inflacion(1, 15)).
-	
+
 
 promete(rojo, nuevosPuestosDeTrabajo(800000)).
 promete(rojo, inflacion(10, 30)).
@@ -222,10 +218,40 @@ influenciaDePromesas(promete(_, inflacion(CotaInferior, CotaSuperior)), Variacio
 influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), VariacionIntencionDeVotos):-
 	Cantidad > 50000,
 	VariacionIntencionDeVotos is 3.
-influenciaDePromesas(promete(Partido, construir, VariacionIntencionDeVotos)):-
+influenciaDePromesas(promete(Partido, construir(Obras)), VariacionIntencionDeVotos):-
+	influenciaHospitales(Obras, InfluenciaHospitales),
+	influenciaJardinesYEscuelas(bras, InfluenciaJardinesYEscuelas),
+	influenciaComisarias(Obras, InfluenciaComisarias),
+	inlfuenciaGastoInnecesario(Partido, InfluenciaNegativa)
+	VariacionIntencionDeVotos is InfluenciaHospitales + InfluenciaJardinesYEscuelas + InfluenciaComisarias - InfluenciaNegativa.
 
+influenciaHospitales(Obras, Influencia):-
+	member((hospital, Cantidad), Obras),
+	Cantidad => 1,
+	Influencia is 2.
+
+influenciaJardinesYEscuelas(Obras, Influencia):-
+	member((jardines, CantidadJardines), Obras),
+	member(escuelas, CantidadEscuelas), Obras)
+	Influencia is (CantidadJardines + CantidadEscuelas) * 0.1.
+
+influenciaComisarias(Obras, Influencia):-
+	member((comisarias, Cantidad), Obras),
+	Cantidad == 200,
+	Influencia is 2.
 	
-	
+inlfuenciaGastoInnecesario(Partido, Influencia):-
+	findall(Edilicio, edilicioInnecesario(Partido), Edilicios),
+	length(Edilicios, Influencia).
+
+edilicioInnecesario(Partido):-
+	promete(Partido, construir(Obra, _),
+	Obra /= hospital,
+	Obra /= comisarias,
+	Obra /= universidad,
+	Obra /= jardines,
+	Obra /= escuelas.
+
 %Punto 8
 promedioDeCrecimiento(Partido, CrecimientoTotal):-
 	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido),variacionIntencionDeVotos), Puntaje), % COMPLETAR CON LOS PARAMETROS QUE TOME, %puntaje por cada promesa
