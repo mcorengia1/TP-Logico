@@ -215,42 +215,28 @@ promete(rojo, inflacion(10, 30)).
 %Punto 7
 influenciaDePromesas(promete(_, inflacion(CotaInferior, CotaSuperior)), VariacionIntencionDeVotos):-
 	VariacionIntencionDeVotos is (CotaInferior + CotaSuperior) / (-2).
-influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), VariacionIntencionDeVotos):-
-	Cantidad > 50000,
-	VariacionIntencionDeVotos is 3.
-influenciaDePromesas(promete(Partido, construir(Obras)), VariacionIntencionDeVotos):-
-	influenciaHospitales(Obras, InfluenciaHospitales),
-	influenciaJardinesYEscuelas(bras, InfluenciaJardinesYEscuelas),
-	influenciaComisarias(Obras, InfluenciaComisarias),
-	inlfuenciaGastoInnecesario(Partido, InfluenciaNegativa),
-	VariacionIntencionDeVotos is (InfluenciaHospitales + InfluenciaJardinesYEscuelas + InfluenciaComisarias - InfluenciaNegativa).
+influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), 3):-
+	Cantidad > 50000.
+influenciaDePromesas(promete(Partido, Obras), VariacionIntencionDeVotos):-
+	findall(Influencia, (calculoInfluencia(Influencia, Obra), member(Obra, Obras)), Influencias),
+	sumlist(Influencias, VariacionIntencionDeVotos).
 
-influenciaHospitales(Obras, Influencia):-
-	member((hospital, Cantidad), Obras),
-	Cantidad >= 1,
-	Influencia is 2.
+calculoInfluencia(2 , construir(hospital, Cantidad)):-
+	Cantidad => 1.
+calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	
+	Influencia is Cantidad * 0.1.
+calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
+	Influencia is Cantidad * 0.1.
+calculoInfluencia(200, construir(comisarias, Cantidad)):-
+	Cantidad == 200.
+calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
+	Edilicio /= hospital,
+	Edilicio /= comisarias,
+	Edilicio /= universidad,
+	Edilicio /= jardines,
+	Edilicio /= escuelas,
+	Influencia is Edilicio * (-1).
 
-influenciaJardinesYEscuelas(Obras, Influencia):-
-	member((jardines, CantidadJardines), Obras),
-	member((escuelas, CantidadEscuelas), Obras),
-	Influencia is (CantidadJardines + CantidadEscuelas) * 0.1.
-
-influenciaComisarias(Obras, Influencia):-
-	member((comisarias, Cantidad), Obras),
-	Cantidad == 200,
-	Influencia is 2.
-	
-inlfuenciaGastoInnecesario(Partido, Influencia):-
-	findall(Edilicio, edilicioInnecesario(Partido), Edilicios),
-	length(Edilicios, Influencia).
-
-edilicioInnecesario(Partido):-
-	promete(Partido, construir(Obra, _),
-	Obra \= hospital,
-	Obra \= comisarias,
-	Obra \= universidad,
-	Obra \= jardines,
-	Obra \= escuelas.
 
 %Punto 8
 promedioDeCrecimiento(Partido, PuntajeTotal):-
