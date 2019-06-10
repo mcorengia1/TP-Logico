@@ -183,12 +183,12 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 	leGanaATodos(Candidato, Provincia), % relaciono la provincia con el candidato
 	candidato(Candidato, Partido), % relaciono el partido con el candidato
 	intencionDeVotoEn(Provincia, Partido, Porcentaje),
-	PorcentajeDeVotos =:= Porcentaje-20.
+	PorcentajeDeVotos is Porcentaje-20.
 ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 	candidato(Candidato, Partido), % relaciono el partido con el candidato
 	not(leGanaATodos(Candidato, Provincia)), % relaciono la provincia con el candidato
 	intencionDeVotoEn(Provincia, Partido, Porcentaje),
-	PorcentajeDeVotos =:= Porcentaje+5.
+	PorcentajeDeVotos is Porcentaje+5.
 	
 %Punto 6
 
@@ -222,5 +222,9 @@ influenciaDePromesas(variacionIntencionDeVotos, promete(Partido)):-
 
 	
 	
+%Punto 8
+promedioDeCrecimiento(Partido, CrecimientoTotal):-
+	findall(variacionIntencionDeVotos, influenciaDePromesas(promete(Partido),variacionIntencionDeVotos), Puntaje), % COMPLETAR CON LOS PARAMETROS QUE TOME, %puntaje por cada promesa
+	sumlist(Puntaje, CrecimientoTotal).
 
 
