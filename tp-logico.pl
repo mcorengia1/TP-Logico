@@ -183,12 +183,12 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 	leGanaATodos(Candidato, Provincia), % relaciono la provincia con el candidato
 	candidato(Candidato, Partido), % relaciono el partido con el candidato
 	intencionDeVotoEn(Provincia, Partido, Porcentaje),
-	PorcentajeDeVotos =:= Porcentaje-20.
+	PorcentajeDeVotos is Porcentaje-20.
 ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 	candidato(Candidato, Partido), % relaciono el partido con el candidato
 	not(leGanaATodos(Candidato, Provincia)), % relaciono la provincia con el candidato
 	intencionDeVotoEn(Provincia, Partido, Porcentaje),
-	PorcentajeDeVotos =:= Porcentaje+5.
+	PorcentajeDeVotos is Porcentaje+5.
 	
 %Punto 6
 
@@ -198,18 +198,13 @@ ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
 % edilicio(hospital, 800)
 
 
-
-promete(azul, construir(hospital, 100)).
-promete(azul, construir(jardines, 100)).
-promete(azul, construir(escuelas, 5)).
+promete(azul, [construir(hospital, 100), construir(jardines, 100), construir(escuelas, 5)])
 promete(azul, inflacion(2, 4)).
 	
 
-promete(amarillo, construir(hospital, 100)).
-promete(amarillo, construir(universidad, 1)).
-promete(amarillo, construir(comisarias, 200)).
+promete(amarillo, [construir(hospital, 100), construir(universidad, 1), construir(comisarias, 200)])
 promete(amarillo, inflacion(1, 15)).
-	
+
 
 promete(rojo, nuevosPuestosDeTrabajo(800000)).
 promete(rojo, inflacion(10, 30)).
@@ -217,5 +212,32 @@ promete(rojo, inflacion(10, 30)).
 %promete(Partido, Promesa() )
 
 %Punto 7
-influenciaDePromesas(promete(Partido), variacionIntencionDeVotos):-
-	
+influenciaDePromesas(promete(_, inflacion(CotaInferior, CotaSuperior)), VariacionIntencionDeVotos):-
+	VariacionIntencionDeVotos is (CotaInferior + CotaSuperior) / (-2).
+influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), 3):-
+	Cantidad > 50000.
+influenciaDePromesas(promete(Partido, Obras), VariacionIntencionDeVotos):-
+	findall(Influencia, (calculoInfluencia(Influencia, Obra), member(Obra, Obras)), Influencias),
+	sumlist(Influencias, VariacionIntencionDeVotos).
+
+calculoInfluencia(2 , construir(hospital, Cantidad)):-
+	Cantidad => 1.
+calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	
+	Influencia is Cantidad * 0.1.
+calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
+	Influencia is Cantidad * 0.1.
+calculoInfluencia(200, construir(comisarias, Cantidad)):-
+	Cantidad == 200.influenciaDePromesas()
+calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
+	Edilicio /= hospital,
+	Edilicio /= comisarias,
+	Edilicio /= universidad,
+	Edilicio /= jardines,
+	Edilicio /= escuelas,
+	Influencia is Edilicio * (-1).
+
+
+%Punto 8
+promedioDeCrecimiento(Partido, CrecimientoTotal):-
+	findall(Influencia, (promete(Partido, Promesa) , influenciaDePromesas(Promesa, Influencia)), Influencias),
+	sumlist(Influencias, CrecimientoTotal).
