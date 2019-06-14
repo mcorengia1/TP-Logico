@@ -73,7 +73,6 @@ variosPartidos(Provincia):-
     postulaEn(Partido1, Provincia),
     postulaEn(Partido2, Provincia),
     Partido1 \= Partido2.
-% se cambio de / a \
 
 %Punto 3
 
@@ -145,8 +144,8 @@ leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
 	not(postulaEn(PartidoPerdedor, Provincia)).
 
 mayorPorcentaje(CandidatoGanador, CandidatoPerdedor, Provincia):-
-    candidato(CandidatoGanador, PartidoGanador),
-    candidato(CandidatoPerdedor, PartidoPerdedor),
+%    candidato(CandidatoGanador, PartidoGanador),
+%    candidato(CandidatoPerdedor, PartidoPerdedor),
     intencionDeVotoEn(Provincia, PartidoGanador, PorcentajeGanador),
     intencionDeVotoEn(Provincia, PartidoPerdedor, PorcentajePerdedor),
     PorcentajeGanador > PorcentajePerdedor.
@@ -180,7 +179,7 @@ masJovenQue(Candidato1, Candidato2):-
 
 
 %Punto 5  
-% ajusteConsultora(buenosAires, rojo, 20).   ajusteConsultora(neuquen, azul, -10).	OJO neuquen gana, nadie el rojo no compite ahí
+% ajusteConsultora(rojo, buenosAires, 20).   ajusteConsultora(azul, neuquen, 15).	OJO neuquen gana, nadie el rojo no compite ahí
 
 ajusteConsultora(Partido, Provincia, PorcentajeDeVotos):-
 	intencionDeVotoEn(Provincia, Partido, Porcentaje),
