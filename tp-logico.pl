@@ -183,8 +183,7 @@ ajusteConsultora(Partido, Provincia, PorcentajeDeVotos):-
 	PorcentajeDeVotos is Porcentaje+5.
 
 partidoGanaEn(Partido, Provincia):-
-	leGanaATodos(Candidato, Provincia),
-	candidato(Candidato, Partido).
+	forall(postulaEn(OtroPartido, Provincia), mayorPorcentaje(Partido, OtroPartido, Provincia)).
 
 
 
