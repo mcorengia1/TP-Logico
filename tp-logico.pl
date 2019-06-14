@@ -155,41 +155,48 @@ mayorPorcentaje(CandidatoGanador, CandidatoPerdedor, Provincia):-
 	candidato(Candidato1, Partido),
 	candidato(Candidato2, Partido).
 
+
 %Punto 4
+
 elGranCandidato(Candidato):-
-    candidatoMasJoven(Candidato),
-    forall(postulaEn(Partido, Provincia), leGanaATodos(Candidato, Provincia)).
+	candidato(Candidato, Partido),
+	forall(postulaEn(Partido, Provincia), leGanaATodos(Candidato, Provincia)),
+	candidatoMasJoven(Candidato, Partido).
 
 leGanaATodos(Candidato, Provincia):-
-%	candidato(Candidato, Partido),
-	candidato(OtroCandidato, OtroPartido),
-    forall(postulaEn(OtroPartido , Provincia), leGanaA(Candidato, OtroCandidato, Provincia)).
-% leGanaATodos(frank, chubut). leGanaATodos(frank, corrientes). 
+	forall(candidatoSePostulaEn(OtroCandidato, Provincia), leGanaA(Candidato, OtroCandidato, Provincia)).
 
-candidatoMasJoven(Candidato):-
-    candidato(Candidato, Partido),
-    forall(candidato(OtroCandidato, Partido), mayorQue(OtroCandidato, Candidato)).
+candidatoSePostulaEn(Candidato, Provincia):-
+	candidato(Candidato, Partido),
+	postulaEn(Partido, Provincia).
 
-mayorQue(Candidato1, Candidato2):-
+candidatoMasJoven(Candidato, Partido):-
+    forall(candidato(OtroCandidato, Partido), masJovenQue(Candidato, OtroCandidato)).
+
+masJovenQue(Candidato1, Candidato2):-
     edad(Candidato1, Edad1),
     edad(Candidato2, Edad2),
-    Edad1 >= Edad2.
+    Edad1 =< Edad2.
 
 
 %Punto 5  
 % ajusteConsultora(buenosAires, rojo, 20).   ajusteConsultora(neuquen, azul, -10).	OJO neuquen gana, nadie el rojo no compite ahí
 
-ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
-	leGanaATodos(Candidato, Provincia), % relaciono la provincia con el candidato
-	candidato(Candidato, Partido), % relaciono el partido con el candidato
+ajusteConsultora(Partido, Provincia, PorcentajeDeVotos):-
 	intencionDeVotoEn(Provincia, Partido, Porcentaje),
+	partidoGanaEn(Partido, Provincia),
 	PorcentajeDeVotos is Porcentaje-20.
-ajusteConsultora(Provincia, Partido, PorcentajeDeVotos):-
-	candidato(Candidato, Partido), % relaciono el partido con el candidato
-	not(leGanaATodos(Candidato, Provincia)), % relaciono la provincia con el candidato
+ajusteConsultora(Partido, Provincia, PorcentajeDeVotos):-
 	intencionDeVotoEn(Provincia, Partido, Porcentaje),
+	not(partidoGanaEn(Partido, Provincia)),
 	PorcentajeDeVotos is Porcentaje+5.
-	
+
+partidoGanaEn(Partido, Provincia):-
+	candidato(Candidato, Partido),
+	leGanaATodos(Candidato, Provincia).
+
+
+
 %Punto 6
 
 % inflacion(contaInferior, cotaSuperior)
@@ -216,19 +223,18 @@ influenciaDePromesas(promete(_, inflacion(CotaInferior, CotaSuperior)), Variacio
 	VariacionIntencionDeVotos is (CotaInferior + CotaSuperior) / (-2).
 influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), 3):-
 	Cantidad > 50000.
-influenciaDePromesas(promete(Partido, Obras), VariacionIntencionDeVotos):-
-	findall(Influencia, (calculoInfluencia(Influencia, Obra), member(Obra, Obras)), Influencias),
+influenciaDePromesas(promete(_, Obras), VariacionIntencionDeVotos):-
+	findall(Influencia, (member(Obra, Obras), calculoInfluencia(Influencia, Obra)), Influencias),
 	sumlist(Influencias, VariacionIntencionDeVotos).
 
 calculoInfluencia(2 , construir(hospital, Cantidad)):-
 	Cantidad >= 1.
-calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	
+calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	% calculoInfluencia(1.0, construir(jardines, 10)).
 	Influencia is Cantidad * 0.1.
 calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
 	Influencia is Cantidad * 0.1.
-calculoInfluencia(200, construir(comisarias, Cantidad)):-
-	Cantidad == 200.
-calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
+calculoInfluencia(2, construir(comisarias, 200)).
+calculoInfluencia(Influencia, construir(Edilicio, _)):-
 	Edilicio \= hospital,
 	Edilicio \= comisarias,
 	Edilicio \= universidad,
@@ -239,7 +245,7 @@ calculoInfluencia(Influencia, construir(Edilicio, Cantidad)):-
 
 %Punto 8
 % promedioDeCrecimiento(azul, 9.5).
-% promedioDeCrecimiento(rojo, -17).
+% promedioDeCrecimiento(rojo, -17).     promedioDeCrecimiento(rojo, X).
 % promedioDeCrecimiento(amarillo, -4).
 
 promedioDeCrecimiento(Partido, CrecimientoTotal):-
