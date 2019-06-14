@@ -126,33 +126,25 @@ intencionDeVotoEn(misiones, amarillo, 0).
 
 
 leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
-    mismoPartido(CandidatoGanador, CandidatoPerdedor),
 	candidato(CandidatoGanador, PartidoGanador),
-    postulaEn(PartidoGanador, Provincia).
-leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
-    not(mismoPartido(CandidatoGanador, CandidatoPerdedor)),
-	candidato(CandidatoGanador, PartidoGanador), % se relaciona al candidato ganador con su partido
 	candidato(CandidatoPerdedor, PartidoPerdedor),
-    postulaEn(PartidoGanador, Provincia), % se relaciona el partido con la provincia
-	postulaEn(PartidoPerdedor, Provincia),
-    mayorPorcentaje(CandidatoGanador, CandidatoPerdedor, Provincia).
-leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
-    not(mismoPartido(CandidatoGanador, CandidatoPerdedor)),
-	candidato(CandidatoGanador, PartidoGanador), % se relaciona al candidato ganador con su partido
-	candidato(CandidatoPerdedor, PartidoPerdedor),
-    postulaEn(PartidoGanador, Provincia), % se relaciona el partido con la provincia
+	postulaEn(PartidoGanador, Provincia),
 	not(postulaEn(PartidoPerdedor, Provincia)).
+leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
+	candidato(CandidatoGanador, PartidoGanador),
+	postulaEn(PartidoGanador, Provincia),
+	candidato(CandidatoPerdedor, PartidoPerdedor),
+	PartidoGanador \= PartidoPerdedor,
+	mayorPorcentaje(PartidoGanador, PartidoPerdedor, Provincia).
+leGanaA(CandidatoGanador, CandidatoPerdedor, Provincia):-
+	candidato(CandidatoGanador, Partido),
+	candidato(CandidatoPerdedor, Partido),
+	postulaEn(Partido, Provincia).
 
-mayorPorcentaje(CandidatoGanador, CandidatoPerdedor, Provincia):-
-%    candidato(CandidatoGanador, PartidoGanador),
-%    candidato(CandidatoPerdedor, PartidoPerdedor),
+mayorPorcentaje(PartidoGanador, PartidoPerdedor, Provincia):-
     intencionDeVotoEn(Provincia, PartidoGanador, PorcentajeGanador),
     intencionDeVotoEn(Provincia, PartidoPerdedor, PorcentajePerdedor),
     PorcentajeGanador > PorcentajePerdedor.
-	
- mismoPartido(Candidato1, Candidato2):-
-	candidato(Candidato1, Partido),
-	candidato(Candidato2, Partido).
 
 
 %Punto 4
@@ -191,8 +183,8 @@ ajusteConsultora(Partido, Provincia, PorcentajeDeVotos):-
 	PorcentajeDeVotos is Porcentaje+5.
 
 partidoGanaEn(Partido, Provincia):-
-	candidato(Candidato, Partido),
-	leGanaATodos(Candidato, Provincia).
+	leGanaATodos(Candidato, Provincia),
+	candidato(Candidato, Partido).
 
 
 
