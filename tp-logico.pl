@@ -211,10 +211,14 @@ promete(rojo, inflacion(10, 30)).
 %Punto 7
 influenciaDePromesas(promete(_, inflacion(CotaInferior, CotaSuperior)), VariacionIntencionDeVotos):-
 	VariacionIntencionDeVotos is (CotaInferior + CotaSuperior) / (-2).
+	
 influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), 3):-
 	Cantidad > 50000.
-influenciaDePromesas(promete(_, Obras), VariacionIntencionDeVotos):-
-	findall(Influencia, (member(Obra, Obras), calculoInfluencia(Influencia, Obra)), Influencias),
+%influenciaDePromesas(promete(_, Obras), VariacionIntencionDeVotos):-
+%	findall(Influencia, (member(Obra, Obras), calculoInfluencia(Influencia, Obra)), Influencias),
+%	sumlist(Influencias, VariacionIntencionDeVotos).
+influenciaDePromesas(promete(_, Construir), VariacionIntencionDeVotos):-
+	findall(Influencia, (member(construir(Obra, Cantidad), Construir), calculoInfluencia(Influencia, construir(Obra, Cantidad))), Influencias),
 	sumlist(Influencias, VariacionIntencionDeVotos).
 
 calculoInfluencia(2 , construir(hospital, Cantidad)):-
@@ -224,13 +228,13 @@ calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	% calculoInfluenc
 calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
 	Influencia is Cantidad * 0.1.
 calculoInfluencia(2, construir(comisarias, 200)).
-calculoInfluencia(Influencia, construir(Edilicio, _)):-
-	Edilicio \= hospital,
-	Edilicio \= comisarias,
-	Edilicio \= universidad,
-	Edilicio \= jardines,
-	Edilicio \= escuelas,
-	Influencia is Edilicio * (-1).
+% calculoInfluencia(Influencia, construir(Edilicio, _)):-
+%	Edilicio \= hospital,
+%	Edilicio \= comisarias,
+%	Edilicio \= universidad,
+%	Edilicio \= jardines,
+%	Edilicio \= escuelas,
+%	Influencia is Edilicio * (-1).
 
 
 %Punto 8
@@ -239,5 +243,10 @@ calculoInfluencia(Influencia, construir(Edilicio, _)):-
 % promedioDeCrecimiento(amarillo, -4).
 
 promedioDeCrecimiento(Partido, CrecimientoTotal):-
+	esPartido(Partido),
 	findall(Influencia, (promete(Partido, Promesa) , influenciaDePromesas(promete(Partido, Promesa), Influencia)), Influencias),
 	sumlist(Influencias, CrecimientoTotal).
+
+esPartido(rojo).
+esPartido(amarillo).
+esPartido(azul).
