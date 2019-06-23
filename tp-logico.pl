@@ -224,13 +224,13 @@ calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	% calculoInfluenc
 calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
 	Influencia is Cantidad * 0.1.
 calculoInfluencia(2, construir(comisarias, 200)).
-calculoInfluencia(Influencia, construir(Edilicio, _)):-
-	Edilicio \= hospital,
-	Edilicio \= comisarias,
-	Edilicio \= universidad,
-	Edilicio \= jardines,
-	Edilicio \= escuelas,
-	Influencia is Edilicio * (-1).
+calculoInfluencia(-1, construir(_, _)).
+%	Edilicio \= hospital,
+%	Edilicio \= comisarias,
+%	Edilicio \= universidad,
+%	Edilicio \= jardines,
+%	Edilicio \= escuelas,
+%	Influencia is Edilicio * (-1).
 
 
 %Punto 8
