@@ -195,11 +195,11 @@ partidoGanaEn(Partido, Provincia):-
 % edilicio(hospital, 800)
 
 
-promete(azul, [construir(hospital, 100), construir(jardines, 100), construir(escuelas, 5)]).
+promete(azul, construir([edilicio(hospital, 100), edilicio(jardines, 100), edilicio(escuelas, 5)])).
 promete(azul, inflacion(2, 4)).
 	
 
-promete(amarillo, [construir(hospital, 100), construir(universidad, 1), construir(comisarias, 200)]).
+promete(amarillo,  construir([edilicio(hospital, 100), edilicio(universidad, 1), edilicio(comisarias, 200)])). 
 promete(amarillo, inflacion(1, 15)).
 
 
@@ -213,18 +213,19 @@ influenciaDePromesas(promete(_, inflacion(CotaInferior, CotaSuperior)), Variacio
 	VariacionIntencionDeVotos is (CotaInferior + CotaSuperior) / (-2).
 influenciaDePromesas(promete(_, nuevosPuestosDeTrabajo(Cantidad)), 3):-
 	Cantidad > 50000.
-influenciaDePromesas(promete(_, Obras), VariacionIntencionDeVotos):-
+	
+influenciaDePromesas(promete(_,construir(Obras) ), VariacionIntencionDeVotos):-
 	findall(Influencia, (member(Obra, Obras), calculoInfluencia(Influencia, Obra)), Influencias),
 	sumlist(Influencias, VariacionIntencionDeVotos).
 
-calculoInfluencia(2 , construir(hospital, Cantidad)):-
+calculoInfluencia(2 , edilicio(hospital, Cantidad)):-
 	Cantidad >= 1.
-calculoInfluencia(Influencia, construir(jardines, Cantidad)):-	% calculoInfluencia(1.0, construir(jardines, 10)).
+calculoInfluencia(Influencia, edilicio(jardines, Cantidad)):-	% calculoInfluencia(1.0, construir(jardines, 10)).
 	Influencia is Cantidad * 0.1.
-calculoInfluencia(Influencia, construir(escuelas, Cantidad)):-
+calculoInfluencia(Influencia, edilicio(escuelas, Cantidad)):-
 	Influencia is Cantidad * 0.1.
-calculoInfluencia(2, construir(comisarias, 200)).
-calculoInfluencia(-1, construir(_, _)).
+calculoInfluencia(2, edilicio(comisarias, 200)).
+%calculoInfluencia(-1, edilicio(_, _)).
 %	Edilicio \= hospital,
 %	Edilicio \= comisarias,
 %	Edilicio \= universidad,
@@ -234,7 +235,7 @@ calculoInfluencia(-1, construir(_, _)).
 
 
 %Punto 8
-% promedioDeCrecimiento(azul, 9.5).
+% promedioDeCrecimiento(azul, 9.5).		promedioDeCrecimiento(azul, X).
 % promedioDeCrecimiento(rojo, -17).     promedioDeCrecimiento(rojo, X).
 % promedioDeCrecimiento(amarillo, -4).
 
